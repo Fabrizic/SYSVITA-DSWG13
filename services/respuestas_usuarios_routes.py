@@ -1,28 +1,42 @@
 from flask import Blueprint, request, jsonify, make_response
 from utils.db import db
 from model.respuestas_usuarios import Respuestas_usuarios
+from model.usuarios import Usuarios
 from schemas.respuestas_usuarios_schema import respuestas_usuarios_schema, respuestass_usuarios_schema
-
-#TODO: Implementar las rutas de respuestas_usuarios AGREGAR y UPDATE
+from schemas.usuarios_schema import usuarios_schema
 
 respuestas_usuarios_routes = Blueprint("respuestas_usuarios_routes", __name__)
 
 @respuestas_usuarios_routes.route('/respuestas_usuarios', methods=['POST'])
 def create_respuesta_usuario():
-    respuesta_usuario_id = request.json['respuesta_usuario_id']
     usuario_id = request.json['usuario_id']
-    pregunta_id = request.json['pregunta_id']
-    respuesta_id = request.json['respuesta_id']
+    nombre = request.json.get('nombre', None)
+    email = request.json.get('email', None)
+    respuestas_data = request.json['respuestas']
 
-    new_respuesta_usuario = Respuestas_usuarios(respuesta_usuario_id, usuario_id, pregunta_id, respuesta_id)
+    usuario = Usuarios.query.get(usuario_id)
 
-    db.session.add(new_respuesta_usuario)
+    if not usuario and nombre and email:
+        usuario = Usuarios(usuario_id, nombre, email)
+        db.session.add(usuario)
+
+    new_respuestas_usuario = []
+
+    for respuesta_data in respuestas_data:
+        pregunta_id = respuesta_data['pregunta_id']
+        respuesta_id = respuesta_data['respuesta_id']
+
+        new_respuesta_usuario = Respuestas_usuarios(None, usuario_id, pregunta_id, respuesta_id)
+        new_respuestas_usuario.append(new_respuesta_usuario)
+
+        db.session.add(new_respuesta_usuario)
+
     db.session.commit()
 
-    result = respuestas_usuarios_schema.dump(new_respuesta_usuario)
+    result = respuestas_usuarios_schema.dump(new_respuestas_usuario, many=True)
 
     data = {
-        'message': 'Respuesta de usuario creada',
+        'message': 'Respuestas de usuario creadas',
         'status': 201,
         'data': result
     }
@@ -67,26 +81,42 @@ def get_respuesta_usuario(usuario_id):
 
 @respuestas_usuarios_routes.route('/respuestas_usuarios/<int:usuario_id>', methods=['PUT'])
 def update_respuesta_usuario(usuario_id):
-    respuesta_usuario = Respuestas_usuarios.query.filter_by(usuario_id=usuario_id).first()
+    usuario = Usuarios.query.get(usuario_id)
 
-    if not respuesta_usuario:
+    if not usuario:
         data = {
-            'message': 'Respuesta de usuario no encontrada',
+            'message': 'Usuario no encontrado',
             'status': 404
         }
 
         return make_response(jsonify(data), 404)
 
-    respuesta_usuario.usuario_id = request.json['usuario_id']
-    respuesta_usuario.pregunta_id = request.json['pregunta_id']
-    respuesta_usuario.respuesta_id = request.json['respuesta_id']
+    if 'nombre' in request.json:
+        usuario.nombre = request.json['nombre']
+
+    if 'email' in request.json:
+        usuario.email = request.json['email']
+
+    respuestas_data = request.json['respuestas']
+
+    for respuesta_data in respuestas_data:
+        pregunta_id = respuesta_data['pregunta_id']
+        respuesta_id = respuesta_data['respuesta_id']
+
+        respuesta_usuario = Respuestas_usuarios.query.filter_by(usuario_id=usuario_id, pregunta_id=pregunta_id).first()
+
+        if respuesta_usuario:
+            respuesta_usuario.respuesta_id = respuesta_id
+        else:
+            new_respuesta_usuario = Respuestas_usuarios(usuario_id, pregunta_id, respuesta_id)
+            db.session.add(new_respuesta_usuario)
 
     db.session.commit()
 
-    result = respuestas_usuarios_schema.dump(respuesta_usuario)
+    result = usuarios_schema.dump(usuario)
 
     data = {
-        'message': 'Respuesta de usuario actualizada',
+        'message': 'Usuario y respuestas actualizadas',
         'status': 200,
         'data': result
     }
