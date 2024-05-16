@@ -84,39 +84,36 @@ def update_respuesta_usuario(usuario_id):
     usuario = Usuarios.query.get(usuario_id)
 
     if not usuario:
-        data = {
-            'message': 'Usuario no encontrado',
-            'status': 404
-        }
+        return make_response(jsonify({'message': 'Usuario no encontrado', 'status': 404}), 404)
 
-        return make_response(jsonify(data), 404)
-
-    if 'nombre' in request.json:
-        usuario.nombre = request.json['nombre']
-
-    if 'email' in request.json:
-        usuario.email = request.json['email']
-
+    nombre = request.json.get('nombre', None)
+    email = request.json.get('email', None)
     respuestas_data = request.json['respuestas']
+
+    if nombre:
+        usuario.nombre = nombre
+    if email:
+        usuario.email = email
+
+    Respuestas_usuarios.query.filter_by(usuario_id=usuario_id).delete()
+
+    new_respuestas_usuario = []
 
     for respuesta_data in respuestas_data:
         pregunta_id = respuesta_data['pregunta_id']
         respuesta_id = respuesta_data['respuesta_id']
 
-        respuesta_usuario = Respuestas_usuarios.query.filter_by(usuario_id=usuario_id, pregunta_id=pregunta_id).first()
+        new_respuesta_usuario = Respuestas_usuarios(None, usuario_id, pregunta_id, respuesta_id)
+        new_respuestas_usuario.append(new_respuesta_usuario)
 
-        if respuesta_usuario:
-            respuesta_usuario.respuesta_id = respuesta_id
-        else:
-            new_respuesta_usuario = Respuestas_usuarios(usuario_id, pregunta_id, respuesta_id)
-            db.session.add(new_respuesta_usuario)
+        db.session.add(new_respuesta_usuario)
 
     db.session.commit()
 
-    result = usuarios_schema.dump(usuario)
+    result = respuestas_usuarios_schema.dump(new_respuestas_usuario, many=True)
 
     data = {
-        'message': 'Usuario y respuestas actualizadas',
+        'message': 'Respuestas de usuario actualizadas',
         'status': 200,
         'data': result
     }
