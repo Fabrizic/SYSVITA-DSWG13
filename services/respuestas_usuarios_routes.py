@@ -12,6 +12,7 @@ def create_respuesta_usuario():
     usuario_id = request.json['usuario_id']
     nombre = request.json.get('nombre', None)
     email = request.json.get('email', None)
+    edad = request.json.get('edad', None)
     respuestas_data = request.json['respuestas']
 
     usuario = Usuarios.query.get(usuario_id)

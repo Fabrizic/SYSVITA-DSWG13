@@ -13,7 +13,8 @@ class Respuestas_usuariosSchema(ma.Schema):
         'pregunta_id',
         'pregunta',
         'respuesta_id',
-        'respuesta')
+        'respuesta',
+        'fecha_respuesta')
 
     usuario = ma.Nested(UsuariosSchema)
     pregunta = ma.Nested(PreguntasSchema)

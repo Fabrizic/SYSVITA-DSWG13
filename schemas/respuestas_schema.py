@@ -3,7 +3,6 @@ from marshmallow import fields
 
 class RespuestasSchema(ma.Schema):
     respuesta_id = fields.Integer()
-    pregunta_id = fields.Integer()
     texto_respuesta = fields.String()
 
 respuestas_schema = RespuestasSchema()
