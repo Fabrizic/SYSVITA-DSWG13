@@ -14,7 +14,7 @@ class Usuarios(db.Model):
     email = db.Column(db.String(100))
     edad = db.Column(db.Integer)
 
-    def __init__(self, usuario_id, nombre, email,edad):
+    def __init__(self, usuario_id, nombre, email,edad=None):
         self.usuario_id = usuario_id
         self.nombre = nombre
         self.email = email

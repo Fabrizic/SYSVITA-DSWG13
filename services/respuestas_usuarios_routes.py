@@ -17,8 +17,8 @@ def create_respuesta_usuario():
 
     usuario = Usuarios.query.get(usuario_id)
 
-    if not usuario and nombre and email:
-        usuario = Usuarios(usuario_id, nombre, email)
+    if not usuario and nombre and email and edad:
+        usuario = Usuarios(usuario_id, nombre, email,edad)
         db.session.add(usuario)
 
     new_respuestas_usuario = []
@@ -80,8 +80,12 @@ def get_respuesta_usuario(usuario_id):
     return make_response(jsonify(data), 200)
 
 
-@respuestas_usuarios_routes.route('/respuestas_usuarios/<int:usuario_id>', methods=['PUT'])
-def update_respuesta_usuario(usuario_id):
+@respuestas_usuarios_routes.route('/respuestas_usuarios', methods=['PUT'])
+def update_respuesta_usuario():
+    usuario_id = request.json.get('usuario_id', None)
+    if not usuario_id:
+        return make_response(jsonify({'message': 'No se proporcionó usuario_id', 'status': 400}), 400)
+
     usuario = Usuarios.query.get(usuario_id)
 
     if not usuario:
@@ -89,12 +93,15 @@ def update_respuesta_usuario(usuario_id):
 
     nombre = request.json.get('nombre', None)
     email = request.json.get('email', None)
+    edad = request.json.get('edad', None)  
     respuestas_data = request.json['respuestas']
 
     if nombre:
         usuario.nombre = nombre
     if email:
         usuario.email = email
+    if edad:  
+        usuario.edad = edad
 
     Respuestas_usuarios.query.filter_by(usuario_id=usuario_id).delete()
 
@@ -121,8 +128,14 @@ def update_respuesta_usuario(usuario_id):
 
     return make_response(jsonify(data), 200)
 
+@respuestas_usuarios_routes.route('/respuestas_usuarios', methods=['DELETE'])
 @respuestas_usuarios_routes.route('/respuestas_usuarios/<int:usuario_id>', methods=['DELETE'])
-def delete_respuesta_usuario(usuario_id):
+def delete_respuesta_usuario(usuario_id=None):
+    if not usuario_id:
+        usuario_id = request.json.get('usuario_id', None)
+        if not usuario_id:
+            return make_response(jsonify({'message': 'No se proporcionó usuario_id', 'status': 400}), 400)
+
     respuestas_usuario = Respuestas_usuarios.query.filter_by(usuario_id=usuario_id).all()
 
     if not respuestas_usuario:
