@@ -94,6 +94,7 @@ Para utilizar este proyecto, necesitarás enviar una solicitud HTTP con un cuerp
         }
     ]
 }
+```
 
 Cada objeto en el array `respuestas` representa una respuesta a una pregunta del test de ansiedad. `pregunta_id` es el ID de la pregunta y `respuesta_id` es el ID de la respuesta seleccionada por el usuario.
 
