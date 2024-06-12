@@ -1,43 +1,32 @@
 from flask import Blueprint, request, jsonify, make_response
 from utils.db import db
-from werkzeug.security import generate_password_hash
 from model.login import Login
 
 respuestas_login_routes = Blueprint("respuestas_login_routes", __name__)
 
 @respuestas_login_routes.route('/login', methods=['POST'])
-def create_login():
+def login():
     correo = request.json['correo']
     contrasena = request.json['contrasena']
-    contrasena_encriptada = generate_password_hash(contrasena)
 
-    login = Login.query.filter_by(correo=correo, contrasena=contrasena_encriptada).first()
+    login = Login.query.filter_by(correo=correo).first()
 
-    if not login:
-        new_login = Login(None, correo, contrasena_encriptada)
-        db.session.add(new_login)
-        db.session.commit()
-
+    if login and login.check_password(contrasena):
         data = {
-            'message': 'Login creado',
-            'status': 201,
+            'message': 'Login exitoso',
+            'status': 200,
             'data': {
-                'login_id': new_login.login_id,
-                'correo': new_login.correo,
-                'contrasena': new_login.contrasena
+                'login_id': login.id,
+                'correo': login.correo
             }
         }
 
-        return make_response(jsonify(data), 201)
+        return make_response(jsonify(data), 200)
 
     data = {
-        'message': 'Login ya existe',
+        'message': 'Correo o contraseña incorrectos',
         'status': 400,
-        'data': {
-            'login_id': login.login_id,
-            'correo': login.correo,
-            'contrasena': login.contrasena
-        }
+        'data': {}
     }
 
     return make_response(jsonify(data), 400)
@@ -50,7 +39,7 @@ def get_logins():
         'status': 200,
         'data': [
             {
-                'login_id': login.login_id,
+                'login_id': login.id,
                 'correo': login.correo,
                 'contrasena': login.contrasena
             } for login in logins
@@ -76,7 +65,7 @@ def get_login(login_id):
         'message': 'Login encontrado',
         'status': 200,
         'data': {
-            'login_id': login.login_id,
+            'login_id': login.id,
             'correo': login.correo,
             'contrasena': login.contrasena
         }
@@ -98,14 +87,14 @@ def update_login(login_id):
         return make_response(jsonify(data), 404)
 
     login.correo = request.json['correo']
-    login.contrasena = generate_password_hash(request.json['contrasena'])
+    login.contrasena = Login.generate_password_hash(request.json['contrasena'])
     db.session.commit()
 
     data = {
         'message': 'Login actualizado',
         'status': 200,
         'data': {
-            'login_id': login.login_id,
+            'login_id': login.id,
             'correo': login.correo,
             'contrasena': login.contrasena
         }
