@@ -7,7 +7,7 @@ from services.respuestas_register_routes import respuestas_register_routes
 from config import DATABASE_CONNECTION
 
 app = Flask(__name__)
-CORS(app, origins=['http://localhost:4200'])
+CORS(app, origins=['http://localhost:4200']) # o poner CORS(app, origins='*') para permitir todas las conexiones
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_CONNECTION
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
