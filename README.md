@@ -5,8 +5,8 @@ SISVITA es una página web de ayuda psicológica que permite a los usuarios real
 # Integrantes
 
 - Leiva Misari, Fabrizio
-- Quispe Rueda, Diego
-- Duran Solis, Yago
+- Quispe Rueda, Diego Kevin
+- Solis Guerrero, Yago
 
 ## Cómo usar
 
