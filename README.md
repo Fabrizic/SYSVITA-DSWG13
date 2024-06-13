@@ -2,6 +2,12 @@
 
 SISVITA es una página web de ayuda psicológica que permite a los usuarios realizar un test de ansiedad. Este proyecto es un caso de uso para realizar pruebas en el sistema de test de ansiedad de SISVITA.
 
+# Integrantes
+
+- Leiva Misari, Fabrizio
+- Quispe Rueda, Diego
+- Duran Solis, Yago
+
 ## Cómo usar
 
 Para utilizar este proyecto, necesitarás enviar una solicitud HTTP con un cuerpo JSON. Aquí tienes un ejemplo de cómo debería ser el formato JSON:
