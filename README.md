@@ -1,12 +1,12 @@
 # Proyecto de Pruebas de Caso de Uso de Respuestas de Usuarios para SISVITA
 
-SISVITA es una página web de ayuda psicológica que permite a los usuarios realizar un test de ansiedad. Este proyecto es un caso de uso para realizar pruebas en el sistema de test de ansiedad de SISVITA.
+SISVITA es una página web de ayuda psicológica que permite a los usuarios realizar un test de ansiedad denominado zuhn. Este proyecto es un caso de uso para realizar pruebas en el sistema de test de ansiedad de SISVITA.
 
 # Integrantes
 
 - Leiva Misari, Fabrizio
-- Quispe Rueda, Diego
-- Duran Solis, Yago
+- Quispe Rueda, Diego Kevin
+- Solis Guerrero, Yago
 
 ## Cómo usar
 
