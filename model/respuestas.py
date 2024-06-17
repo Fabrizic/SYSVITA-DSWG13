@@ -4,16 +4,20 @@ from dataclasses import dataclass
 @dataclass
 class Respuestas(db.Model):
     __tablename__ = 'respuestas'
-    respuesta_id: int
-    pregunta_id: int
-    texto_respuesta: str
+    respuestaid: int
+    testid: int
+    textorespuesta: str
+    numerorespuesta: int
 
-    respuesta_id = db.Column(db.Integer, primary_key=True)
-    pregunta_id = db.Column(db.Integer)
-    texto_respuesta = db.Column(db.String(100))
+    respuestaid = db.Column(db.Integer, primary_key=True)
+    testid = db.Column(db.Integer, db.ForeignKey('tests.testid'))
+    textorespuesta = db.Column(db.String(100))
+    numerorespuesta = db.Column(db.Integer)
 
-    def __init__(self, respuesta_id, pregunta_id, texto_respuesta, nivel_intensidad):
-        self.respuesta_id = respuesta_id
-        self.pregunta_id = pregunta_id
-        self.texto_respuesta = texto_respuesta
+    test = db.relationship('Tests', backref='respuestas')
+
+    def __init__(self, testid, textorespuesta, numerorespuesta):
+        self.testid = testid
+        self.textorespuesta = textorespuesta
+        self.numerorespuesta = numerorespuesta
         

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response
 from utils.db import db
-from model.login import Login
+from model.usuario import Usuario
 
 respuestas_login_routes = Blueprint("respuestas_login_routes", __name__)
 
@@ -9,14 +9,15 @@ def login():
     correo = request.json['correo']
     contrasena = request.json['contrasena']
 
-    login = Login.query.filter_by(correo=correo).first()
+    login = Usuario.query.filter_by(correo=correo).first()
 
     if login and login.check_password(contrasena):
         data = {
             'message': 'Login exitoso',
             'status': 200,
             'data': {
-                'login_id': login.id,
+                'usuario_id': login.usuario_id,
+                'persona_id': login.persona_id,
                 'correo': login.correo
             }
         }
@@ -33,13 +34,14 @@ def login():
 
 @respuestas_login_routes.route('/login', methods=['GET'])
 def get_logins():
-    logins = Login.query.all()
+    logins = Usuario.query.all()
     data = {
         'message': 'Todos los logins',
         'status': 200,
         'data': [
             {
-                'login_id': login.id,
+                'usuario_id': login.usuario_id,
+                'persona_id': login.persona_id,
                 'correo': login.correo,
                 'contrasena': login.contrasena
             } for login in logins
@@ -48,13 +50,13 @@ def get_logins():
 
     return make_response(jsonify(data), 200)
 
-@respuestas_login_routes.route('/login/<int:login_id>', methods=['GET'])
-def get_login(login_id):
-    login = Login.query.get(login_id)
+@respuestas_login_routes.route('/login/<int:usuario_id>', methods=['GET'])
+def get_login(usuario_id):
+    login = Usuario.query.get(usuario_id)
 
     if not login:
         data = {
-            'message': 'Login no encontrado',
+            'message': 'Usuario no encontrado',
             'status': 404,
             'data': {}
         }
@@ -62,10 +64,11 @@ def get_login(login_id):
         return make_response(jsonify(data), 404)
 
     data = {
-        'message': 'Login encontrado',
+        'message': 'Usuario encontrado',
         'status': 200,
         'data': {
-            'login_id': login.id,
+            'usuario_id': login.usuario_id,
+            'persona_id': login.persona_id,
             'correo': login.correo,
             'contrasena': login.contrasena
         }
@@ -73,13 +76,13 @@ def get_login(login_id):
 
     return make_response(jsonify(data), 200)
 
-@respuestas_login_routes.route('/login/<int:login_id>', methods=['PUT'])
-def update_login(login_id):
-    login = Login.query.get(login_id)
+@respuestas_login_routes.route('/login/<int:usuario_id>', methods=['PUT'])
+def update_login(usuario_id):
+    login = Usuario.query.get(usuario_id)
 
     if not login:
         data = {
-            'message': 'Login no encontrado',
+            'message': 'Usuario no encontrado',
             'status': 404,
             'data': {}
         }
@@ -87,14 +90,14 @@ def update_login(login_id):
         return make_response(jsonify(data), 404)
 
     login.correo = request.json['correo']
-    login.contrasena = Login.generate_password_hash(request.json['contrasena'])
+    login.contrasena = Usuario.generate_password_hash(request.json['contrasena'])
     db.session.commit()
 
     data = {
-        'message': 'Login actualizado',
+        'message': 'Usuario actualizado',
         'status': 200,
         'data': {
-            'login_id': login.id,
+            'usuario_id': login.usuario_id,
             'correo': login.correo,
             'contrasena': login.contrasena
         }
@@ -102,13 +105,13 @@ def update_login(login_id):
 
     return make_response(jsonify(data), 200)
 
-@respuestas_login_routes.route('/login/<int:login_id>', methods=['DELETE'])
-def delete_login(login_id):
-    login = Login.query.get(login_id)
+@respuestas_login_routes.route('/login/<int:usuario_id>', methods=['DELETE'])
+def delete_login(usuario_id):
+    login = Usuario.query.get(usuario_id)
 
     if not login:
         data = {
-            'message': 'Login no encontrado',
+            'message': 'Usuario no encontrado',
             'status': 404,
             'data': {}
         }
@@ -119,7 +122,7 @@ def delete_login(login_id):
     db.session.commit()
 
     data = {
-        'message': 'Login eliminado',
+        'message': 'Usuario eliminado',
         'status': 200,
         'data': {}
     }

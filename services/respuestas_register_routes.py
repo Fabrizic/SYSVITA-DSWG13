@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from utils.db import db
-from model.register import Persona
-from model.login import Login
+from model.persona import Persona
+from model.usuario import Usuario
 
 respuestas_register_routes = Blueprint("respuestas_register_routes", __name__)
 
@@ -14,20 +14,20 @@ def register():
     apellidomaterno = request.json['apellidomaterno']
     fechanacimiento = request.json['fechanacimiento']
 
-    new_login = Login(correo, contrasena)
-    db.session.add(new_login)
-    db.session.commit()
-
-    new_persona = Persona(id=new_login.id, nombre=nombre, apellidopaterno=apellidopaterno, apellidomaterno=apellidomaterno, fechanacimiento=fechanacimiento)
+    new_persona = Persona(nombre=nombre, apellidopaterno=apellidopaterno, apellidomaterno=apellidomaterno, fechanacimiento=fechanacimiento)
     db.session.add(new_persona)
+    db.session.flush()
+
+    new_Usuario = Usuario(persona_id=new_persona.persona_id,correo=correo,contrasena= contrasena)
+    db.session.add(new_Usuario)
     db.session.commit()
 
     data = {
         'message': 'Registro exitoso',
         'status': 201,
         'data': {
-            'login_id': new_login.id,
-            'correo': new_login.correo,
+            'Usuario_id': new_persona.persona_id,
+            'correo': new_Usuario.correo,
             'nombre': new_persona.nombre,
             'apellidopaterno': new_persona.apellidopaterno,
             'apellidomaterno': new_persona.apellidomaterno,
