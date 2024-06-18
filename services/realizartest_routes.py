@@ -14,7 +14,7 @@ def create_respuestausuario_and_diagnostico():
     testid = request.json['testid']
     respuestas = request.json['respuestas']
     respuestas_creadas = []
-    suma = 0
+    puntaje = 0
 
     for respuesta in respuestas:
         preguntaid = respuesta['preguntaid']
@@ -24,7 +24,7 @@ def create_respuestausuario_and_diagnostico():
         respuesta_obj = Respuestas.query.filter_by(respuestaid=respuestaid).first()
         numerorespuesta = respuesta_obj.numerorespuesta if respuesta_obj else 0
 
-        suma += numerorespuesta
+        puntaje += numerorespuesta
 
         respuestausuario = Respuestasusuario(personaid, testid, preguntaid, respuestaid)
         db.session.add(respuestausuario)
@@ -47,16 +47,16 @@ def create_respuestausuario_and_diagnostico():
             'respuestaid': respuestausuario.respuestaid
         })
 
-    if suma < 45:
+    if puntaje < 45:
         diagnostico = 'Ansiedad normal'
-    elif suma >= 45 and suma < 60:
+    elif puntaje >= 45 and puntaje < 60:
         diagnostico = 'Ansiedad mínima moderada'
-    elif suma >= 60 and suma < 75:
+    elif puntaje >= 60 and puntaje < 75:
         diagnostico = 'Ansiedad moderada severa'
     else:
         diagnostico = 'Ansiedad en grado máximo'
 
-    diagnostico_obj = Diagnosticos(personaid, testid, suma, diagnostico)
+    diagnostico_obj = Diagnosticos(personaid, testid, puntaje, diagnostico)
     db.session.add(diagnostico_obj)
     db.session.commit()
 
@@ -64,7 +64,28 @@ def create_respuestausuario_and_diagnostico():
         'message': 'Respuestas de usuario y diagnóstico creados',
         'status': 201,
         'data': respuestas_creadas,
+        'puntaje': puntaje,
         'diagnostico': diagnostico
     }
 
+    print(data)
     return make_response(jsonify(data), 201)
+
+@realizartest_routes.route('/realizartest/<int:persona_id>', methods=['GET'])
+def get_diagnosticos(persona_id):
+    diagnosticos = Diagnosticos.query.filter_by(personaid=persona_id).all()
+    data = {
+        'message': 'Todos los diagnósticos',
+        'status': 200,
+        'data': [
+            {
+                'diagnosticoid': diagnostico.diagnosticoid,
+                'personaid': diagnostico.personaid,
+                'testid': diagnostico.testid,
+                'puntaje': diagnostico.puntaje,
+                'diagnostico': diagnostico.diagnostico
+            } for diagnostico in diagnosticos
+        ]
+    }
+
+    return make_response(jsonify(data), 200)
