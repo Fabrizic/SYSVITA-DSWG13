@@ -47,14 +47,27 @@ def create_respuestausuario_and_diagnostico():
             'respuestaid': respuestausuario.respuestaid
         })
 
-    if puntaje < 45:
-        diagnostico = 'Ansiedad normal'
-    elif puntaje >= 45 and puntaje < 60:
-        diagnostico = 'Ansiedad mínima moderada'
-    elif puntaje >= 60 and puntaje < 75:
-        diagnostico = 'Ansiedad moderada severa'
-    else:
-        diagnostico = 'Ansiedad en grado máximo'
+        testid = respuestausuario.testid
+        
+        if testid == 1:
+            if puntaje < 45:
+                diagnostico = 'Ansiedad normal'
+            elif puntaje >= 45 and puntaje < 60:
+                diagnostico = 'Ansiedad mínima moderada'
+            elif puntaje >= 60 and puntaje < 75:
+                diagnostico = 'Ansiedad moderada severa'
+            else:
+                diagnostico = 'Ansiedad en grado máximo'
+
+        elif testid == 4:
+            if puntaje <= 28:
+                diagnostico = 'Ausencia de depresión'
+            elif puntaje > 28 and puntaje <= 41:
+                diagnostico = 'Depresión leve'
+            elif puntaje > 41 and puntaje < 53:
+                diagnostico = 'Depresión moderada'
+            else:
+                diagnostico = 'Depresión grave'
 
     diagnostico_obj = Diagnosticos(personaid, testid, puntaje, diagnostico)
     db.session.add(diagnostico_obj)

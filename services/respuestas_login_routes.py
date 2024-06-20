@@ -8,8 +8,9 @@ respuestas_login_routes = Blueprint("respuestas_login_routes", __name__)
 def login():
     correo = request.json['correo']
     contrasena = request.json['contrasena']
+    tipousuarioid = request.json['tipousuarioid']
 
-    login = Usuario.query.filter_by(correo=correo).first()
+    login = Usuario.query.filter_by(correo=correo, tipousuarioid=tipousuarioid).first()
 
     if login and login.check_password(contrasena):
         data = {
@@ -18,7 +19,8 @@ def login():
             'data': {
                 'usuario_id': login.usuario_id,
                 'persona_id': login.persona_id,
-                'correo': login.correo
+                'correo': login.correo,
+                'tipousuarioid': login.tipousuarioid,
             }
         }
 

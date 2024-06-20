@@ -8,10 +8,11 @@ from services.respuestas_routes import respuestas_routes
 from services.test_routes import tests_routes
 from services.respuestasusuario_routes import respuestasusuario_routes
 from services.realizartest_routes import realizartest_routes
+from services.tipousuario_routes import tipousuario_routes
 from config import DATABASE_CONNECTION
 
 app = Flask(__name__)
-CORS(app, origins='*') # o poner CORS(app, origins='*') para permitir todas las conexiones
+CORS(app)# o poner CORS(app, origins='*') para permitir todas las conexiones
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_CONNECTION
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -23,6 +24,7 @@ app.register_blueprint(respuestas_routes)
 app.register_blueprint(tests_routes)
 app.register_blueprint(respuestasusuario_routes)
 app.register_blueprint(realizartest_routes)
+app.register_blueprint(tipousuario_routes)
 
 with app.app_context():
     db.create_all()

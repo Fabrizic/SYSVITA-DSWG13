@@ -13,12 +13,13 @@ def register():
     apellidopaterno = request.json['apellidopaterno']
     apellidomaterno = request.json['apellidomaterno']
     fechanacimiento = request.json['fechanacimiento']
+    tipousuarioid = request.json['tipousuarioid'] # Especialistas no se puedes registrar
 
     new_persona = Persona(nombre=nombre, apellidopaterno=apellidopaterno, apellidomaterno=apellidomaterno, fechanacimiento=fechanacimiento)
     db.session.add(new_persona)
     db.session.flush()
 
-    new_Usuario = Usuario(persona_id=new_persona.persona_id,correo=correo,contrasena= contrasena)
+    new_Usuario = Usuario(persona_id=new_persona.persona_id,correo=correo,contrasena= contrasena, tipousuarioid=tipousuarioid)
     db.session.add(new_Usuario)
     db.session.commit()
 
@@ -27,6 +28,7 @@ def register():
         'status': 201,
         'data': {
             'Usuario_id': new_persona.persona_id,
+            'tipousuarioid': new_Usuario.tipousuarioid, # 'tipousuarioid': '1' # Especialistas no se pueden registrar
             'correo': new_Usuario.correo,
             'nombre': new_persona.nombre,
             'apellidopaterno': new_persona.apellidopaterno,
