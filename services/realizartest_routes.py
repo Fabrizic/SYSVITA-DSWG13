@@ -5,6 +5,7 @@ from model.respuestasusuario import Respuestasusuario
 from model.respuestas import Respuestas
 from model.tests import Tests
 from model.persona import Persona
+from model.puntuacion import Puntuacion
 
 realizartest_routes = Blueprint("realizartest_routes", __name__)
 
@@ -68,6 +69,14 @@ def create_respuestausuario_and_diagnostico():
                 diagnostico = 'Depresión moderada'
             else:
                 diagnostico = 'Depresión grave'
+
+    """# Consulta la tabla Puntuacion para obtener el diagnóstico
+    puntuacion_obj = Puntuacion.query.filter_by(testid=testid).filter(Puntuacion.rango_inferior <= puntaje, Puntuacion.rango_superior >= puntaje).first()
+
+    if puntuacion_obj:
+        diagnostico = puntuacion_obj.diagnostico
+    else:
+        diagnostico = 'Diagnóstico no encontrado' """
 
     diagnostico_obj = Diagnosticos(personaid, testid, puntaje, diagnostico)
     db.session.add(diagnostico_obj)
