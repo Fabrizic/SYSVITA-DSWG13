@@ -13,7 +13,7 @@ def register():
     apellidopaterno = request.json['apellidopaterno']
     apellidomaterno = request.json['apellidomaterno']
     fechanacimiento = request.json['fechanacimiento']
-    tipousuarioid = request.json['tipousuarioid'] # Especialistas no se puedes registrar
+    tipousuarioid = request.json['tipousuarioid']
 
     new_persona = Persona(nombre=nombre, apellidopaterno=apellidopaterno, apellidomaterno=apellidomaterno, fechanacimiento=fechanacimiento)
     db.session.add(new_persona)

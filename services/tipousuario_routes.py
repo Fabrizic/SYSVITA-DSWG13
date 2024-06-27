@@ -30,3 +30,19 @@ def create_tipousuario():
     }
 
     return make_response(jsonify(data), 201)
+
+@tipousuario_routes.route('/tipousuario', methods=['GET'])
+def get_tipousuarios():
+    tipousuarios = Tipousuario.query.all()
+    data = {
+        'message': 'Todos los tipos de usuario',
+        'status': 200,
+        'data': [
+            {
+                'tipousuarioid': tipousuario.tipousuarioid,
+                'descripcion': tipousuario.descripcion
+            } for tipousuario in tipousuarios
+        ]
+    }
+
+    return make_response(jsonify(data), 200)
