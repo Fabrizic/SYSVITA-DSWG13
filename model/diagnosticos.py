@@ -5,27 +5,29 @@ from sqlalchemy.sql import func
 
 @dataclass
 class Diagnosticos(db.Model):
+    __tablename__ = 'diagnosticos'
     diagnosticoid: int
     personaid: int
     testid: int
     fecha: DateTime
     puntaje: int
-    diagnostico: str
+    puntuacionid: int
 
     diagnosticoid = db.Column(db.Integer, primary_key=True)
     personaid = db.Column(db.Integer, db.ForeignKey('persona.persona_id'))
     testid = db.Column(db.Integer, db.ForeignKey('tests.testid'))
-    fecha = Column(DateTime(timezone=True), server_default=func.now())
+    fecha = db.Column(db.Date(),server_default=func.now())
     puntaje = db.Column(db.Integer)
-    diagnostico = db.Column(db.String(255))
+    puntuacionid = db.Column(db.Integer, db.ForeignKey('puntuacion.puntuacionid'))
 
     persona = db.relationship('Persona', backref='diagnosticos')
     test = db.relationship('Tests', backref='diagnosticos')
+    puntuacion = db.relationship('Puntuacion', backref='diagnosticos')
 
-    def __init__(self, personaid, testid, puntaje, diagnostico):
+    def __init__(self, personaid, testid, puntaje, puntuacionid):
         self.personaid = personaid
         self.testid = testid
         self.puntaje = puntaje
-        self.diagnostico = diagnostico
+        self.puntuacionid = puntuacionid
 
     

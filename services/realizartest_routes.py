@@ -3,9 +3,10 @@ from utils.db import db
 from model.diagnosticos import Diagnosticos
 from model.respuestasusuario import Respuestasusuario
 from model.respuestas import Respuestas
-from model.tests import Tests
-from model.persona import Persona
 from model.puntuacion import Puntuacion
+from schemas.diagnostico_schema import DiagnosticoSchema
+from model.persona import Persona
+from model.ubigeo import Ubigeo
 
 realizartest_routes = Blueprint("realizartest_routes", __name__)
 
@@ -49,36 +50,17 @@ def create_respuestausuario_and_diagnostico():
         })
 
         testid = respuestausuario.testid
-        
-        if testid == 1:
-            if puntaje < 45:
-                diagnostico = 'Ansiedad normal'
-            elif puntaje >= 45 and puntaje < 60:
-                diagnostico = 'Ansiedad mínima moderada'
-            elif puntaje >= 60 and puntaje < 75:
-                diagnostico = 'Ansiedad moderada severa'
-            else:
-                diagnostico = 'Ansiedad en grado máximo'
 
-        elif testid == 4:
-            if puntaje <= 28:
-                diagnostico = 'Ausencia de depresión'
-            elif puntaje > 28 and puntaje <= 41:
-                diagnostico = 'Depresión leve'
-            elif puntaje > 41 and puntaje < 53:
-                diagnostico = 'Depresión moderada'
-            else:
-                diagnostico = 'Depresión grave'
-
-    """# Consulta la tabla Puntuacion para obtener el diagnóstico
+    # Consulta la tabla Puntuacion para obtener el diagnóstico
     puntuacion_obj = Puntuacion.query.filter_by(testid=testid).filter(Puntuacion.rango_inferior <= puntaje, Puntuacion.rango_superior >= puntaje).first()
 
     if puntuacion_obj:
+        puntuacionid = puntuacion_obj.puntuacionid
         diagnostico = puntuacion_obj.diagnostico
     else:
-        diagnostico = 'Diagnóstico no encontrado' """
+        puntuacionid = None
 
-    diagnostico_obj = Diagnosticos(personaid, testid, puntaje, diagnostico)
+    diagnostico_obj = Diagnosticos(personaid, testid, puntaje, puntuacionid)
     db.session.add(diagnostico_obj)
     db.session.commit()
 
@@ -87,7 +69,8 @@ def create_respuestausuario_and_diagnostico():
         'status': 201,
         'data': respuestas_creadas,
         'puntaje': puntaje,
-        'diagnostico': diagnostico
+        'puntuacionid': puntuacionid,
+        'diagnostico': diagnostico      
     }
 
     print(data)
@@ -105,7 +88,7 @@ def get_diagnosticos(persona_id):
                 'personaid': diagnostico.personaid,
                 'testid': diagnostico.testid,
                 'puntaje': diagnostico.puntaje,
-                'diagnostico': diagnostico.diagnostico
+                'puntuacionid': diagnostico.puntuacionid
             } for diagnostico in diagnosticos
         ]
     }

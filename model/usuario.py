@@ -1,4 +1,3 @@
-#TODO: Agregar id_persona vinculado al id_persona de la tabla persona
 from utils.db import db
 from dataclasses import dataclass
 from werkzeug.security import generate_password_hash, check_password_hash

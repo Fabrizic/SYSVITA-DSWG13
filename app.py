@@ -9,6 +9,10 @@ from services.test_routes import tests_routes
 from services.respuestasusuario_routes import respuestasusuario_routes
 from services.realizartest_routes import realizartest_routes
 from services.tipousuario_routes import tipousuario_routes
+from services.puntuacion_routes import puntuacion_routes
+from services.ubigeo_routes import ubigeo_routes
+from services.color_routes import color_routes
+from services.diagnostico_routes import diagnostico_routes
 from config import DATABASE_CONNECTION
 
 app = Flask(__name__)
@@ -25,7 +29,10 @@ app.register_blueprint(tests_routes)
 app.register_blueprint(respuestasusuario_routes)
 app.register_blueprint(realizartest_routes)
 app.register_blueprint(tipousuario_routes)
-
+app.register_blueprint(puntuacion_routes)
+app.register_blueprint(ubigeo_routes)
+app.register_blueprint(color_routes)
+app.register_blueprint(diagnostico_routes)
 with app.app_context():
     db.create_all()
 
