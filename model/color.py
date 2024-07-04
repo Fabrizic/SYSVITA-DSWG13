@@ -9,9 +9,9 @@ class Color(db.Model):
     css: str
 
     colorid = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(250), nullable=False)
+    nombre = db.Column(db.String(250), nullable=True)
     css = db.Column(db.String(250), nullable=False)
 
-    def __init__(self, nombre,css):
+    def __init__(self, css, nombre=None):
         self.nombre = nombre
         self.css = css

@@ -13,6 +13,7 @@ from services.puntuacion_routes import puntuacion_routes
 from services.ubigeo_routes import ubigeo_routes
 from services.color_routes import color_routes
 from services.diagnostico_routes import diagnostico_routes
+from services.observacion_routes import observacion_routes
 from config import DATABASE_CONNECTION
 
 app = Flask(__name__)
@@ -33,6 +34,7 @@ app.register_blueprint(puntuacion_routes)
 app.register_blueprint(ubigeo_routes)
 app.register_blueprint(color_routes)
 app.register_blueprint(diagnostico_routes)
+app.register_blueprint(observacion_routes)
 with app.app_context():
     db.create_all()
 

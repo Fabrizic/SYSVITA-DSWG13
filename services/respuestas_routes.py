@@ -77,3 +77,38 @@ def get_respuestas_test(testid):
     }
 
     return make_response(jsonify(data), 200)
+
+@respuestas_routes.route('/respuestasindividual', methods=['POST'])
+def create_respuestaindividual():
+    respuesta_data = request.json
+
+    testid = respuesta_data['testid']
+    textorespuesta = respuesta_data['textorespuesta']
+    numerorespuesta = respuesta_data['numerorespuesta']
+
+    respuesta = Respuestas(testid, textorespuesta, numerorespuesta)
+    db.session.add(respuesta)
+    
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        data = {
+            'message': 'No se pudo crear la respuesta. Error: ' + str(e),
+            'status': 400,
+            'data': {}
+        }
+        return make_response(jsonify(data), 400)
+
+    data = {
+        'message': 'Respuesta creada',
+        'status': 201,
+        'data': {
+            'respuestaid': respuesta.respuestaid,
+            'testid': respuesta.testid,
+            'textorespuesta': respuesta.textorespuesta,
+            'numerorespuesta': respuesta.numerorespuesta
+        }
+    }
+
+    return make_response(jsonify(data), 201)

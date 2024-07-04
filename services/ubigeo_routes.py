@@ -5,6 +5,7 @@ from model.persona import Persona
 from model.diagnosticos import Diagnosticos
 from model.puntuacion import Puntuacion
 from model.color import Color
+from model.tests import Tests
 
 ubigeo_routes = Blueprint("ubigeo_routes", __name__)
 
@@ -110,6 +111,7 @@ def get_coordenadas():
     .join(Diagnosticos, Diagnosticos.personaid == Persona.persona_id)\
     .join(Puntuacion, Puntuacion.puntuacionid == Diagnosticos.puntuacionid)\
     .join(Color, Puntuacion.colorid == Color.colorid)\
+    .join(Tests, Tests.testid == Diagnosticos.testid)\
     .add_columns(
         Ubigeo.ubigeoid,
         Persona.nombre,
@@ -118,7 +120,10 @@ def get_coordenadas():
         Puntuacion.diagnostico,
         Color.css,
         Ubigeo.y,
-        Ubigeo.x
+        Ubigeo.x,
+        Tests.nombre.label('testnombre'),
+        Tests.testid,
+        Diagnosticos.fecha
     )\
     .all()
     
@@ -133,7 +138,10 @@ def get_coordenadas():
                 'diagnostico': ubigeo.diagnostico,
                 'color': ubigeo.css,
                 'y': ubigeo.y,
-                'x': ubigeo.x
+                'x': ubigeo.x,
+                'testnombre': ubigeo.testnombre,
+                'testid': ubigeo.testid,
+                'fecha': ubigeo.fecha.strftime('%Y-%m-%d')
             }
             data_list.append(data)
 
