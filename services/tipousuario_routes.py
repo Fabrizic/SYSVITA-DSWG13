@@ -46,3 +46,18 @@ def get_tipousuarios():
     }
 
     return make_response(jsonify(data), 200)
+
+
+@tipousuario_routes.route('/tipousuario/<int:tipousuarioid>', methods=['DELETE'])
+def delete_tipousuario(tipousuarioid):
+    tipousuario = Tipousuario.query.get(tipousuarioid)
+    db.session.delete(tipousuario)
+    db.session.commit()
+
+    data = {
+        'message': 'Tipo de usuario eliminado',
+        'status': 200,
+        'data': {}
+    }
+
+    return make_response(jsonify(data), 200)
