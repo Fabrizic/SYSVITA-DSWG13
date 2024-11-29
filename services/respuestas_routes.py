@@ -71,7 +71,6 @@ def get_respuestas_test(testid):
                 'respuestaid': respuesta.respuestaid,
                 'testid': respuesta.testid,
                 'textorespuesta': respuesta.textorespuesta,
-                'numerorespuesta': respuesta.numerorespuesta
             } for respuesta in respuestas
         ]
     }

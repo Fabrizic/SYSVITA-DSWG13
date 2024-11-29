@@ -10,6 +10,7 @@ from model.ubigeo import Ubigeo
 from model.tests import Tests
 from model.preguntas import Preguntas
 from model.respuestas import Respuestas
+import json
 
 realizartest_routes = Blueprint("realizartest_routes", __name__)
 
@@ -20,6 +21,9 @@ def create_respuestausuario_and_diagnostico():
     respuestas = request.json['respuestas']
     respuestas_creadas = []
     puntaje = 0
+
+    if isinstance(respuestas, str):
+        respuestas = json.loads(respuestas)
 
     # Calcular el puntaje total primero
     for respuesta in respuestas:
