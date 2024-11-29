@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from utils.db import db
 from model.usuario import Usuario
+from model.persona import Persona
 
 respuestas_login_routes = Blueprint("respuestas_login_routes", __name__)
 
@@ -11,6 +12,7 @@ def login():
     tipousuarioid = request.json['tipousuarioid']
 
     login = Usuario.query.filter_by(correo=correo, tipousuarioid=tipousuarioid).first()
+    persona = Persona.query.filter_by(persona_id=login.persona_id).first()
 
     if login and login.check_password(contrasena):
         data = {
@@ -21,6 +23,7 @@ def login():
                 'persona_id': login.persona_id,
                 'correo': login.correo,
                 'tipousuarioid': login.tipousuarioid,
+                'username': persona.nombre + ' ' + persona.apellidopaterno,
             }
         }
 
